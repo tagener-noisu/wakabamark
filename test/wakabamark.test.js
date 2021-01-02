@@ -91,3 +91,32 @@ describe("plain text", () => {
         expect(matcher("*hel*lo")).toEqual(null);
     });
 });
+
+describe("flatten", () => {
+    it("flattens the result", () => {
+        const {asterisk, and, flatten} = wakabamark;
+        const matcher = flatten(and(asterisk, and(asterisk, asterisk)));
+
+        expect(matcher("***")).toEqual([["*", "*", "*"], ""]);
+    });
+});
+
+describe("strip", () => {
+    it("joins result from the previous matcher", () => {
+        const {plain_text, and, asterisk, strip, flatten} = wakabamark;
+        const matcher = strip(
+            flatten(and(asterisk, and(plain_text, asterisk))));
+
+        expect(matcher("*hello*")).toEqual(["hello", ""]);
+    });
+});
+
+describe("italic", () => {
+    it("matches italic text", () => {
+        const matcher = wakabamark.italic;
+
+        expect(matcher("*hello*")).toEqual(["hello", ""]);
+        expect(matcher("_hello_")).toEqual(["hello", ""]);
+        expect(matcher("**hello**")).toEqual(null);
+    });
+});

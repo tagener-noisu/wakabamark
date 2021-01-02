@@ -85,10 +85,40 @@ function join(matcher) {
     }
 }
 
+function flatten(matcher) {
+    return (str) => {
+        let match = matcher(str);
+
+        if (match === null)
+            return null;
+
+        return [match[0].flat(), match[1]];
+    }
+}
+
+function strip(matcher) {
+    return (str) => {
+        let match = matcher(str);
+
+        if (match === null || match[0].length < 3)
+            return null;
+
+        return [match[0][1], match[1]];
+    }
+}
+
 const asterisk = char_match("*")
+
 const underscore = char_match("_")
 
 const plain_text = join(one_or_more(not(or(asterisk, underscore))));
+
+const asterisk_or_underscore = or(asterisk, underscore);
+
+const italic =
+    strip(flatten(
+        and(asterisk_or_underscore,
+            and(plain_text, asterisk_or_underscore))));
 
 module.exports = {
     char_match,
@@ -97,7 +127,10 @@ module.exports = {
     or,
     one_or_more,
     join,
+    flatten,
+    strip,
     asterisk,
     underscore,
     plain_text,
+    italic,
 }
