@@ -105,44 +105,49 @@ const underscore = char_match("_");
 
 const backtick = char_match("`");
 
-const plain_text = (str) => {
-    const matcher = join(one_or_more(not(or(asterisk, underscore, backtick))));
-
-    const result = matcher(str);
-    if (result === null)
-        return null;
-
-    return [{type: "string", value: result[0]}, result[1]];
-}
-
 const asterisk_or_underscore = or(asterisk, underscore);
 
+function create_ast(type, matcher) {
+    return (str) => {
+        const result = matcher(str);
+
+        if (result === null)
+            return null;
+
+        return [{type: type, children: result[0]}, result[1]];
+    }
+}
+
+function contents_with_tags(tags, contents) {
+    return strip(and(tags, contents, tags));
+}
+
+const plain_text = create_ast("string",
+    join(one_or_more(not(or(asterisk, underscore, backtick)))));
+
 const italic = (str) => {
-    const matcher = strip(
-        and(asterisk_or_underscore, plain_text, asterisk_or_underscore));
+    const contents = one_or_more(plain_text);
+    const tags = asterisk_or_underscore;
+    const matcher = create_ast("italic", contents_with_tags(tags, contents));
 
-    const result = matcher(str);
-    if (result === null)
-        return null;
-
-    return [{type: "italic", children: [result[0]]}, result[1]];
+    return matcher(str);
 }
 
 const bold = (str) => {
-    const matcher = strip(and(
-        join(and(asterisk_or_underscore, asterisk_or_underscore)),
-        plain_text,
-        join(and(asterisk_or_underscore, asterisk_or_underscore))));
+    const contents = one_or_more(plain_text);
+    const tags = and(asterisk_or_underscore, asterisk_or_underscore);
+    const matcher = create_ast("bold", contents_with_tags(tags, contents));
 
-    const result = matcher(str);
-    if (result === null)
-        return null;
-
-    return [{type: "bold", children: [result[0]]}, result[1]];
+    return matcher(str);
 }
 
-const monospace =
-    strip(and(backtick, plain_text, backtick));
+const monospace = (str) => {
+    const contents = one_or_more(plain_text);
+    const tags = backtick;
+    const matcher = create_ast("mono", contents_with_tags(tags, contents));
+
+    return matcher(str);
+}
 
 module.exports = {
     char_match,

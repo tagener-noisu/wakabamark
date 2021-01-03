@@ -87,10 +87,10 @@ describe("plain text", () => {
         const matcher = wakabamark.plain_text;
 
         expect(matcher("hello")).toEqual(
-            [{type: "string", value: "hello"}, ""]);
+            [{type: "string", children: "hello"}, ""]);
 
         expect(matcher("hel*lo")).toEqual(
-            [{type: "string", value: "hel"}, "*lo"]);
+            [{type: "string", children: "hel"}, "*lo"]);
 
         expect(matcher("*hel*lo")).toEqual(null);
     });
@@ -102,7 +102,7 @@ describe("strip", () => {
         const matcher = strip(and(asterisk, plain_text, asterisk));
 
         expect(matcher("*hello*")).toEqual(
-            [{type: "string", value: "hello"}, ""]);
+            [{type: "string", children: "hello"}, ""]);
     });
 });
 
@@ -113,10 +113,10 @@ describe("italic", () => {
         expect(matcher("**hello**")).toEqual(null);
 
         expect(matcher("*hello*")).toEqual(
-            [{type: "italic", children: [{type: "string", value: "hello"}]}, ""]);
+            [{type: "italic", children: [{type: "string", children: "hello"}]}, ""]);
 
         expect(matcher("_hello_")).toEqual(
-            [{type: "italic", children: [{type: "string", value: "hello"}]}, ""]);
+            [{type: "italic", children: [{type: "string", children: "hello"}]}, ""]);
     });
 });
 
@@ -127,19 +127,18 @@ describe("bold", () => {
         expect(matcher("*hello*")).toEqual(null);
 
         expect(matcher("**hello**")).toEqual(
-            [{type: "bold", children: [{type: "string", value: "hello"}]}, ""]);
+            [{type: "bold", children: [{type: "string", children: "hello"}]}, ""]);
 
         expect(matcher("__hello__")).toEqual(
-            [{type: "bold", children: [{type: "string", value: "hello"}]}, ""]);
+            [{type: "bold", children: [{type: "string", children: "hello"}]}, ""]);
     });
 });
 
-/*
 describe("monospace", () => {
     it("matches monospace text", () => {
         const matcher = wakabamark.monospace;
 
-        expect(matcher("`hello`")).toEqual(["hello", ""]);
+        expect(matcher("`hello`")).toEqual(
+            [{type: "mono", children: [{type: "string", children: "hello"}]}, ""]);
     });
 });
-*/
