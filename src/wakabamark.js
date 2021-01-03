@@ -103,6 +103,21 @@ function strip(matcher) {
     }
 }
 
+function number_of(matcher) {
+    return (str) => {
+        let match = matcher(str);
+
+        if (match === null)
+            return null;
+
+        const number = Number(match[0]);
+        if (isNaN(number))
+            return null;
+
+        return [number, match[1]];
+    }
+}
+
 const asterisk = char_match("*");
 
 const underscore = char_match("_");
@@ -110,6 +125,8 @@ const underscore = char_match("_");
 const backtick = char_match("`");
 
 const asterisk_or_underscore = or(asterisk, underscore);
+
+const number = number_of(join(one_or_more(digit)));
 
 function create_ast(type, matcher) {
     return (str) => {
@@ -165,6 +182,7 @@ module.exports = {
     asterisk,
     underscore,
     backtick,
+    number,
     plain_text,
     italic,
     bold,

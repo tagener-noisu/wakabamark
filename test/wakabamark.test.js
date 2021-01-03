@@ -199,6 +199,14 @@ describe("digit", () => {
     });
 });
 
+describe("number", () => {
+    it("matches integer numbers", () => {
+        const {number} = wakabamark;
+
+        expect(number("1337x")).toEqual([1337, "x"]);
+    });
+});
+
 /*
 describe("post_link", () => {
     it("matches post link", () => {
