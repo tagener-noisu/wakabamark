@@ -169,7 +169,7 @@ const bold = (str) => {
 }
 
 const monospace = (str) => {
-    const contents = one_or_more(or(plain_text, post_link));
+    const contents = one_or_more(or(plain_text, bold, italic, post_link));
     const tags = backtick;
     const matcher = create_ast("mono", tag_around(tags, contents));
 

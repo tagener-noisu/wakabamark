@@ -214,6 +214,31 @@ describe("monospace", () => {
             [{type: "mono", children: [{type: "string", children: "hello"}]}, ""]);
     });
 
+    it("can contain bold", () => {
+        const matcher = wakabamark.monospace;
+
+        expect(matcher("`foo__bold__`")).toEqual(
+            [{type: "mono",
+                children: [
+                    {type: "string", children: "foo"},
+                    {type: "bold", children: [{type: "string", children: "bold"}]}
+                ]}, ""
+            ]);
+    });
+
+    it("can contain italic", () => {
+        const matcher = wakabamark.monospace;
+
+        expect(matcher("`hello, *w*orld`")).toEqual(
+            [{type: "mono",
+                children: [
+                    {type: "string", children: "hello, "},
+                    {type: "italic", children: [{type: "string", children: "w"}]},
+                    {type: "string", children: "orld"}
+                ]}, ""
+            ]);
+    });
+
     it("can contain post_link", () => {
         const matcher = wakabamark.monospace;
 
