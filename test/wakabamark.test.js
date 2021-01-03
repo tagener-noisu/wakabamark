@@ -190,3 +190,21 @@ describe("monospace", () => {
             [{type: "mono", children: [{type: "string", children: "hello"}]}, ""]);
     });
 });
+
+describe("digit", () => {
+    it("matches digits", () => {
+        const {digit} = wakabamark;
+
+        expect(digit("9x")).toEqual(["9", "x"]);
+    });
+});
+
+/*
+describe("post_link", () => {
+    it("matches post link", () => {
+        const matcher = wakabamark.post_link;
+
+        expect(matcher(">>248")).toEqual([248, ""]);
+    });
+});
+*/

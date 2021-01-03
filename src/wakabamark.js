@@ -1,14 +1,18 @@
-function char_match(ch) {
+function pred_match(pred) {
     return (str) => {
         if (str.length === 0)
             return null;
 
-        if (str[0] == ch)
+        if (pred(str[0]))
             return [str[0], str.slice(1)];
         else
             return null;
     }
 }
+
+const char_match = (ch) => pred_match(x => x === ch);
+
+const digit = pred_match(x => x >= "0" && x <= "9");
 
 function not(matcher) {
     return (str) => {
@@ -151,6 +155,7 @@ const monospace = (str) => {
 
 module.exports = {
     char_match,
+    digit,
     not,
     and,
     or,
