@@ -43,10 +43,10 @@ describe("not", () => {
 describe("and", () => {
     it("checks both matchers", () => {
         const {asterisk, and} = wakabamark;
-        const matcher = and(asterisk, asterisk);
+        const matcher = and(asterisk, asterisk, asterisk);
 
         expect(matcher("*hello")).toBe(null);
-        expect(matcher("**hello")).toEqual([["*", "*"], "hello"]);
+        expect(matcher("***hello")).toEqual([["*", "*", "*"], "hello"]);
     });
 });
 
@@ -92,20 +92,10 @@ describe("plain text", () => {
     });
 });
 
-describe("flatten", () => {
-    it("flattens the result", () => {
-        const {asterisk, and, flatten} = wakabamark;
-        const matcher = flatten(and(asterisk, and(asterisk, asterisk)));
-
-        expect(matcher("***")).toEqual([["*", "*", "*"], ""]);
-    });
-});
-
 describe("strip", () => {
     it("joins result from the previous matcher", () => {
-        const {plain_text, and, asterisk, strip, flatten} = wakabamark;
-        const matcher = strip(
-            flatten(and(asterisk, and(plain_text, asterisk))));
+        const {plain_text, and, asterisk, strip} = wakabamark;
+        const matcher = strip(and(asterisk, plain_text, asterisk));
 
         expect(matcher("*hello*")).toEqual(["hello", ""]);
     });

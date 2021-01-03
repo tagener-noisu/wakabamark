@@ -19,21 +19,24 @@ function not(matcher) {
     }
 }
 
-function and(m1, m2) {
+function and() {
+    const matchers = arguments;
+
     return (str) => {
-        const match1 = m1(str);
+        const result = [];
+        let rest = str;
 
-        if (match1 === null)
-            return null;
+        for (const matcher of matchers) {
+            const match = matcher(rest);
 
-        const [result1, str1] = match1;
-        const match2 = m2(str1);
+            if (match === null)
+                return null;
 
-        if (match2 === null)
-            return null;
+            result.push(match[0]);
+            rest = match[1];
+        }
 
-        const [result2, str2] = match2;
-        return [[result1, result2], str2];
+        return [result, rest];
     }
 }
 
@@ -119,20 +122,17 @@ const plain_text =
 const asterisk_or_underscore = or(asterisk, underscore);
 
 const italic =
-    strip(flatten(
-        and(asterisk_or_underscore,
-            and(plain_text, asterisk_or_underscore))));
+    strip(
+        and(asterisk_or_underscore, plain_text, asterisk_or_underscore));
 
 const bold =
-    strip(flatten(
-        and(join(and(asterisk_or_underscore, asterisk_or_underscore)),
-            and(plain_text,
-                join(and(asterisk_or_underscore, asterisk_or_underscore))))));
+    strip(and(
+        join(and(asterisk_or_underscore, asterisk_or_underscore)),
+        plain_text,
+        join(and(asterisk_or_underscore, asterisk_or_underscore))));
 
 const monospace =
-    strip(flatten(
-        and(backtick,
-            and(plain_text, backtick))));
+    strip(and(backtick, plain_text, backtick));
 
 module.exports = {
     char_match,
@@ -141,7 +141,6 @@ module.exports = {
     or,
     one_or_more,
     join,
-    flatten,
     strip,
     asterisk,
     underscore,
