@@ -79,46 +79,39 @@ function one_or_more(matcher) {
     }
 }
 
-function join(matcher) {
-    return (str) => {
-        let match = matcher(str);
+function if_match(matcher, fn) {
+        return (str) => {
+            let match = matcher(str);
 
-        if (match === null)
-            return null;
+            if (match === null)
+                return null;
+            else
+                return [fn(match[0]), match[1]];
+        }
+}
 
-        const result = match[0].reduce((acc, x) => {
+const join = (matcher) =>
+    if_match(matcher, (match) => 
+        match.reduce((acc, x) => {
             return acc + x;
-        }, "");
+        }, "")
+    );
 
-        return [result, match[1]];
-    }
-}
+const strip = (matcher, index = 1) =>
+    if_match(matcher, (match) => match[index])
 
-function strip(matcher, index = 1) {
-    return (str) => {
-        let match = matcher(str);
+const number_of = (matcher) =>
+    if_match(matcher, (match) => {
+        const number = Number(match);
 
-        if (match === null || match[0].length < index + 1)
-            return null;
-
-        return [match[0][index], match[1]];
-    }
-}
-
-function number_of(matcher) {
-    return (str) => {
-        let match = matcher(str);
-
-        if (match === null)
-            return null;
-
-        const number = Number(match[0]);
         if (isNaN(number))
             return null;
 
-        return [number, match[1]];
-    }
-}
+        return number;
+    });
+
+const create_ast = (type, matcher) =>
+    if_match(matcher, (match) => ({type, children: match}));
 
 function maybe(matcher) {
     return(str) => {
@@ -129,6 +122,10 @@ function maybe(matcher) {
 
         return match;
     }
+}
+
+function tag_around(tags, contents) {
+    return strip(and(tags, contents, tags));
 }
 
 const asterisk = char_match("*");
@@ -152,21 +149,6 @@ const end_paragraph = and(carriage_return, new_line);
 const asterisk_or_underscore = or(asterisk, underscore);
 
 const number = number_of(join(one_or_more(digit)));
-
-function create_ast(type, matcher) {
-    return (str) => {
-        const result = matcher(str);
-
-        if (result === null)
-            return null;
-
-        return [{type: type, children: result[0]}, result[1]];
-    }
-}
-
-function tag_around(tags, contents) {
-    return strip(and(tags, contents, tags));
-}
 
 const plain_text = create_ast("string",
     join(one_or_more(not(or(
