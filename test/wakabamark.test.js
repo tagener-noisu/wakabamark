@@ -118,6 +118,30 @@ describe("italic", () => {
         expect(matcher("_hello_")).toEqual(
             [{type: "italic", children: [{type: "string", children: "hello"}]}, ""]);
     });
+
+    it("can contain bold", () => {
+        const matcher = wakabamark.italic;
+
+        expect(matcher("_hell**o**_")).toEqual(
+            [{type: "italic",
+                children: [
+                    {type: "string", children: "hell"},
+                    {type: "bold", children: [{type: "string", children: "o"}]}
+                ]}, ""
+            ]);
+    });
+
+    it("can contain monospace", () => {
+        const matcher = wakabamark.italic;
+
+        expect(matcher("_hell`o`_")).toEqual(
+            [{type: "italic",
+                children: [
+                    {type: "string", children: "hell"},
+                    {type: "mono", children: [{type: "string", children: "o"}]}
+                ]}, ""
+            ]);
+    });
 });
 
 describe("bold", () => {
@@ -131,6 +155,30 @@ describe("bold", () => {
 
         expect(matcher("__hello__")).toEqual(
             [{type: "bold", children: [{type: "string", children: "hello"}]}, ""]);
+    });
+
+    it("can contain italic", () => {
+        const matcher = wakabamark.bold;
+
+        expect(matcher("**hell*o***")).toEqual(
+            [{type: "bold",
+                children: [
+                    {type: "string", children: "hell"},
+                    {type: "italic", children: [{type: "string", children: "o"}]}
+                ]}, ""
+            ]);
+    });
+
+    it("can contain monospace", () => {
+        const matcher = wakabamark.bold;
+
+        expect(matcher("__hell`o`__")).toEqual(
+            [{type: "bold",
+                children: [
+                    {type: "string", children: "hell"},
+                    {type: "mono", children: [{type: "string", children: "o"}]}
+                ]}, ""
+            ]);
     });
 });
 

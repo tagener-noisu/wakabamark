@@ -126,7 +126,7 @@ const plain_text = create_ast("string",
     join(one_or_more(not(or(asterisk, underscore, backtick)))));
 
 const italic = (str) => {
-    const contents = one_or_more(plain_text);
+    const contents = one_or_more(or(plain_text, bold, monospace));
     const tags = asterisk_or_underscore;
     const matcher = create_ast("italic", contents_with_tags(tags, contents));
 
@@ -134,7 +134,7 @@ const italic = (str) => {
 }
 
 const bold = (str) => {
-    const contents = one_or_more(plain_text);
+    const contents = one_or_more(or(plain_text, italic, monospace));
     const tags = and(asterisk_or_underscore, asterisk_or_underscore);
     const matcher = create_ast("bold", contents_with_tags(tags, contents));
 
