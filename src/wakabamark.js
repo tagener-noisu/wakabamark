@@ -213,8 +213,13 @@ const spoiler = (str) => {
     return matcher(str);
 }
 
-const paragraph = create_ast("paragraph",
-    strip(and(one_or_more(plain_text), maybe(end_paragraph)), 0));
+const paragraph = (() => {
+    const contents = one_or_more(or(
+        plain_text, bold, italic, monospace, post_link, spoiler));
+
+    return create_ast("paragraph",
+        strip(and(contents, maybe(end_paragraph)), 0));
+})();
 
 module.exports = {
     char_match,

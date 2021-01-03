@@ -361,4 +361,54 @@ describe("paragraph", () => {
                 {type: "string", children: "first line"}
             ]}, ""]);
     });
+
+    it("contains bold", () => {
+        const matcher = wakabamark.paragraph;
+
+        expect(matcher("first **line**")).toEqual(
+            [{type: "paragraph", children: [
+                {type: "string", children: "first "},
+                {type: "bold", children: [{type: "string", children: "line"}]}
+            ]}, ""]);
+    });
+
+    it("contains italic", () => {
+        const matcher = wakabamark.paragraph;
+
+        expect(matcher("first _line_")).toEqual(
+            [{type: "paragraph", children: [
+                {type: "string", children: "first "},
+                {type: "italic", children: [{type: "string", children: "line"}]}
+            ]}, ""]);
+    });
+
+    it("contains monospace", () => {
+        const matcher = wakabamark.paragraph;
+
+        expect(matcher("first `line`")).toEqual(
+            [{type: "paragraph", children: [
+                {type: "string", children: "first "},
+                {type: "mono", children: [{type: "string", children: "line"}]}
+            ]}, ""]);
+    });
+
+    it("contains post_link", () => {
+        const matcher = wakabamark.paragraph;
+
+        expect(matcher("first >>458")).toEqual(
+            [{type: "paragraph", children: [
+                {type: "string", children: "first "},
+                {type: "post_link", children: 458}
+            ]}, ""]);
+    });
+
+    it("contains spoiler", () => {
+        const matcher = wakabamark.paragraph;
+
+        expect(matcher("first %%line%%")).toEqual(
+            [{type: "paragraph", children: [
+                {type: "string", children: "first "},
+                {type: "spoiler", children: [{type: "string", children: "line"}]}
+            ]}, ""]);
+    });
 });
