@@ -88,17 +88,6 @@ function join(matcher) {
     }
 }
 
-function flatten(matcher) {
-    return (str) => {
-        let match = matcher(str);
-
-        if (match === null)
-            return null;
-
-        return [match[0].flat(), match[1]];
-    }
-}
-
 function strip(matcher) {
     return (str) => {
         let match = matcher(str);
