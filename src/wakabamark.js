@@ -107,11 +107,14 @@ function strip(matcher) {
     }
 }
 
-const asterisk = char_match("*")
+const asterisk = char_match("*");
 
-const underscore = char_match("_")
+const underscore = char_match("_");
 
-const plain_text = join(one_or_more(not(or(asterisk, underscore))));
+const backtick = char_match("`");
+
+const plain_text =
+    join(one_or_more(not(or(or(asterisk, underscore), backtick))));
 
 const asterisk_or_underscore = or(asterisk, underscore);
 
@@ -126,6 +129,11 @@ const bold =
             and(plain_text,
                 join(and(asterisk_or_underscore, asterisk_or_underscore))))));
 
+const monospace =
+    strip(flatten(
+        and(backtick,
+            and(plain_text, backtick))));
+
 module.exports = {
     char_match,
     not,
@@ -137,7 +145,9 @@ module.exports = {
     strip,
     asterisk,
     underscore,
+    backtick,
     plain_text,
     italic,
     bold,
+    monospace,
 }

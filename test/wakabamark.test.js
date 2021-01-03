@@ -130,3 +130,11 @@ describe("bold", () => {
         expect(matcher("*hello*")).toEqual(null);
     });
 });
+
+describe("monospace", () => {
+    it("matches monospace text", () => {
+        const matcher = wakabamark.monospace;
+
+        expect(matcher("`hello`")).toEqual(["hello", ""]);
+    });
+});
