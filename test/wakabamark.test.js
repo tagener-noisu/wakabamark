@@ -207,12 +207,13 @@ describe("number", () => {
     });
 });
 
-/*
 describe("post_link", () => {
     it("matches post link", () => {
         const matcher = wakabamark.post_link;
 
-        expect(matcher(">>248")).toEqual([248, ""]);
+        expect(matcher(">248")).toBe(null);
+
+        expect(matcher(">>248")).toEqual(
+            [{type: "post_link", children: 248}, ""]);
     });
 });
-*/

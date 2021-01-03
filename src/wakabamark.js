@@ -92,14 +92,14 @@ function join(matcher) {
     }
 }
 
-function strip(matcher) {
+function strip(matcher, index = 1) {
     return (str) => {
         let match = matcher(str);
 
-        if (match === null || match[0].length < 3)
+        if (match === null || match[0].length < index + 1)
             return null;
 
-        return [match[0][1], match[1]];
+        return [match[0][index], match[1]];
     }
 }
 
@@ -123,6 +123,8 @@ const asterisk = char_match("*");
 const underscore = char_match("_");
 
 const backtick = char_match("`");
+
+const right_chevron = char_match(">");
 
 const asterisk_or_underscore = or(asterisk, underscore);
 
@@ -170,6 +172,9 @@ const monospace = (str) => {
     return matcher(str);
 }
 
+const post_link = create_ast("post_link",
+    strip(and(right_chevron, right_chevron, number), 2));
+
 module.exports = {
     char_match,
     digit,
@@ -187,4 +192,6 @@ module.exports = {
     italic,
     bold,
     monospace,
+    post_link,
+
 }
