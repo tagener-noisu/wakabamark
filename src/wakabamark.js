@@ -203,6 +203,8 @@ const paragraph = (() => {
         strip(and(contents, maybe(end_paragraph)), 0));
 })();
 
+const parse = one_or_more(paragraph);
+
 module.exports = {
     char_match,
     digit,
@@ -223,4 +225,5 @@ module.exports = {
     post_link,
     spoiler,
     paragraph,
+    parse
 }

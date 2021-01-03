@@ -412,3 +412,22 @@ describe("paragraph", () => {
             ]}, ""]);
     });
 });
+
+describe("parse", () => {
+    it("returns AST of a given text", () => {
+        const text = ">>1 %%foo%%\r\nAll good?";
+        const {parse} = wakabamark;
+
+        expect(parse(text)).toEqual(
+            [[
+                {type: "paragraph", children: [
+                    {type: "post_link", children: 1},
+                    {type: "string", children: " "},
+                    {type: "spoiler", children: [{type: "string", children: "foo"}]}
+                ]},
+                {type: "paragraph", children: [
+                    {type: "string", children: "All good?"}
+                ]}
+            ], ""]);
+    });
+});
