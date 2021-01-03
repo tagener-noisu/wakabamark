@@ -105,20 +105,41 @@ const underscore = char_match("_");
 
 const backtick = char_match("`");
 
-const plain_text =
-    join(one_or_more(not(or(asterisk, underscore, backtick))));
+const plain_text = (str) => {
+    const matcher = join(one_or_more(not(or(asterisk, underscore, backtick))));
+
+    const result = matcher(str);
+    if (result === null)
+        return null;
+
+    return [{type: "string", value: result[0]}, result[1]];
+}
 
 const asterisk_or_underscore = or(asterisk, underscore);
 
-const italic =
-    strip(
+const italic = (str) => {
+    const matcher = strip(
         and(asterisk_or_underscore, plain_text, asterisk_or_underscore));
 
-const bold =
-    strip(and(
+    const result = matcher(str);
+    if (result === null)
+        return null;
+
+    return [{type: "italic", children: [result[0]]}, result[1]];
+}
+
+const bold = (str) => {
+    const matcher = strip(and(
         join(and(asterisk_or_underscore, asterisk_or_underscore)),
         plain_text,
         join(and(asterisk_or_underscore, asterisk_or_underscore))));
+
+    const result = matcher(str);
+    if (result === null)
+        return null;
+
+    return [{type: "bold", children: [result[0]]}, result[1]];
+}
 
 const monospace =
     strip(and(backtick, plain_text, backtick));
