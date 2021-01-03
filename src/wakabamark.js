@@ -40,14 +40,18 @@ function and() {
     }
 }
 
-function or(m1, m2) {
+function or() {
+    const matchers = arguments;
+
     return (str) => {
-        const match1 = m1(str);
+        for(const matcher of matchers) {
+            const match = matcher(str);
 
-        if (match1 !== null)
-            return match1;
+            if (match !== null)
+                return match;
+        }
 
-        return m2(str);
+        return null;
     }
 }
 
@@ -117,7 +121,7 @@ const underscore = char_match("_");
 const backtick = char_match("`");
 
 const plain_text =
-    join(one_or_more(not(or(or(asterisk, underscore), backtick))));
+    join(one_or_more(not(or(asterisk, underscore, backtick))));
 
 const asterisk_or_underscore = or(asterisk, underscore);
 
