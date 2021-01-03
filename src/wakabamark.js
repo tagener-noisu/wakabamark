@@ -130,6 +130,8 @@ const right_chevron = char_match(">");
 
 const slash = char_match("/");
 
+const percent = char_match("%");
+
 const asterisk_or_underscore = or(asterisk, underscore);
 
 const number = number_of(join(one_or_more(digit)));
@@ -150,7 +152,8 @@ function tag_around(tags, contents) {
 }
 
 const plain_text = create_ast("string",
-    join(one_or_more(not(or(asterisk, underscore, backtick, right_chevron)))));
+    join(one_or_more(not(or(
+        asterisk, underscore, backtick, right_chevron, percent)))));
 
 const italic = (str) => {
     const contents = one_or_more(or(plain_text, bold, monospace, post_link));
@@ -184,6 +187,15 @@ const post_link = (() => {
         strip(and(right_chevron, right_chevron, contents), 2))
 })();
 
+const spoiler = (str) => {
+    const contents = one_or_more(or(
+        plain_text, bold, italic, monospace, post_link, spoiler));
+    const tag = and(percent, percent);
+    const matcher = create_ast("spoiler", tag_around(tag, contents));
+
+    return matcher(str);
+}
+
 module.exports = {
     char_match,
     digit,
@@ -202,5 +214,5 @@ module.exports = {
     bold,
     monospace,
     post_link,
-
+    spoiler,
 }

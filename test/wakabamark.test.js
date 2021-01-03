@@ -281,3 +281,64 @@ describe("post_link", () => {
             [{type: "post_link", children: ["slow", 248]}, ""]);
     });
 });
+
+describe("spoiler", () => {
+    it("matches spoiler", () => {
+        const matcher = wakabamark.spoiler;
+
+        expect(matcher("%%fug%% foo")).toEqual(
+            [{type: "spoiler", children: [
+                {type: "string", children: "fug"}
+            ]}, " foo"]);
+    });
+
+    it("can contain bold", () => {
+        const matcher = wakabamark.spoiler;
+
+        expect(matcher("%%this is **bold**%%")).toEqual(
+            [{type: "spoiler", children: [
+                {type: "string", children: "this is "},
+                {type: "bold", children: [{type: "string", children: "bold"}]}
+            ]}, ""]);
+    });
+
+    it("can contain italic", () => {
+        const matcher = wakabamark.spoiler;
+
+        expect(matcher("%%this is *xx*%%")).toEqual(
+            [{type: "spoiler", children: [
+                {type: "string", children: "this is "},
+                {type: "italic", children: [{type: "string", children: "xx"}]}
+            ]}, ""]);
+    });
+
+    it("can contain monospace", () => {
+        const matcher = wakabamark.spoiler;
+
+        expect(matcher("%%this is `mono`%%")).toEqual(
+            [{type: "spoiler", children: [
+                {type: "string", children: "this is "},
+                {type: "mono", children: [{type: "string", children: "mono"}]}
+            ]}, ""]);
+    });
+
+    it("can contain post link", () => {
+        const matcher = wakabamark.spoiler;
+
+        expect(matcher("%%this is >>451%%")).toEqual(
+            [{type: "spoiler", children: [
+                {type: "string", children: "this is "},
+                {type: "post_link", children: 451}
+            ]}, ""]);
+    });
+
+    it("can contain spoiler", () => {
+        const matcher = wakabamark.spoiler;
+
+        expect(matcher("%%this is %%spoiler%%%%")).toEqual(
+            [{type: "spoiler", children: [
+                {type: "string", children: "this is "},
+                {type: "spoiler", children: [{type: "string", children: "spoiler"}]}
+            ]}, ""]);
+    });
+});
