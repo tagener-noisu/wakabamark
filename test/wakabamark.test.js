@@ -142,6 +142,19 @@ describe("italic", () => {
                 ]}, ""
             ]);
     });
+
+    it("can contain post links", () => {
+        const matcher = wakabamark.italic;
+
+        expect(matcher("_hello >>234 world_")).toEqual(
+            [{type: "italic",
+                children: [
+                    {type: "string", children: "hello "},
+                    {type: "post_link", children: 234},
+                    {type: "string", children: " world"},
+                ]}, ""
+            ]);
+    });
 });
 
 describe("bold", () => {
@@ -180,6 +193,17 @@ describe("bold", () => {
                 ]}, ""
             ]);
     });
+
+    it("can contain post_link", () => {
+        const matcher = wakabamark.bold;
+
+        expect(matcher("__>>239__")).toEqual(
+            [{type: "bold",
+                children: [
+                    {type: "post_link", children: 239},
+                ]}, ""
+            ]);
+    });
 });
 
 describe("monospace", () => {
@@ -188,6 +212,18 @@ describe("monospace", () => {
 
         expect(matcher("`hello`")).toEqual(
             [{type: "mono", children: [{type: "string", children: "hello"}]}, ""]);
+    });
+
+    it("can contain post_link", () => {
+        const matcher = wakabamark.monospace;
+
+        expect(matcher("`foo >>1389`")).toEqual(
+            [{type: "mono",
+                children: [
+                    {type: "string", children: "foo "},
+                    {type: "post_link", children: 1389},
+                ]}, ""
+            ]);
     });
 });
 
@@ -215,5 +251,8 @@ describe("post_link", () => {
 
         expect(matcher(">>248")).toEqual(
             [{type: "post_link", children: 248}, ""]);
+
+        expect(matcher(">>slow/248")).toEqual(
+            [{type: "post_link", children: ["slow", 248]}, ""]);
     });
 });

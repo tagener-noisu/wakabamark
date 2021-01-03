@@ -14,6 +14,8 @@ const char_match = (ch) => pred_match(x => x === ch);
 
 const digit = pred_match(x => x >= "0" && x <= "9");
 
+const alpha = pred_match(x => x >= "A" && x <= "Z" || x >= "a" && x <= "z");
+
 function not(matcher) {
     return (str) => {
         if (matcher(str) === null && str.length > 0)
@@ -126,6 +128,8 @@ const backtick = char_match("`");
 
 const right_chevron = char_match(">");
 
+const slash = char_match("/");
+
 const asterisk_or_underscore = or(asterisk, underscore);
 
 const number = number_of(join(one_or_more(digit)));
@@ -146,10 +150,10 @@ function tag_around(tags, contents) {
 }
 
 const plain_text = create_ast("string",
-    join(one_or_more(not(or(asterisk, underscore, backtick)))));
+    join(one_or_more(not(or(asterisk, underscore, backtick, right_chevron)))));
 
 const italic = (str) => {
-    const contents = one_or_more(or(plain_text, bold, monospace));
+    const contents = one_or_more(or(plain_text, bold, monospace, post_link));
     const tags = asterisk_or_underscore;
     const matcher = create_ast("italic", tag_around(tags, contents));
 
@@ -157,7 +161,7 @@ const italic = (str) => {
 }
 
 const bold = (str) => {
-    const contents = one_or_more(or(plain_text, italic, monospace));
+    const contents = one_or_more(or(plain_text, italic, monospace, post_link));
     const tags = and(asterisk_or_underscore, asterisk_or_underscore);
     const matcher = create_ast("bold", tag_around(tags, contents));
 
@@ -165,15 +169,20 @@ const bold = (str) => {
 }
 
 const monospace = (str) => {
-    const contents = one_or_more(plain_text);
+    const contents = one_or_more(or(plain_text, post_link));
     const tags = backtick;
     const matcher = create_ast("mono", tag_around(tags, contents));
 
     return matcher(str);
 }
 
-const post_link = create_ast("post_link",
-    strip(and(right_chevron, right_chevron, number), 2));
+const post_link = (() => {
+    const board_name = strip(and(join(one_or_more(alpha)), slash), 0);
+    const contents = or(and(board_name, number), number);
+
+    return create_ast("post_link",
+        strip(and(right_chevron, right_chevron, contents), 2))
+})();
 
 module.exports = {
     char_match,
