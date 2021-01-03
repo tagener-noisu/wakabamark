@@ -120,3 +120,13 @@ describe("italic", () => {
         expect(matcher("**hello**")).toEqual(null);
     });
 });
+
+describe("bold", () => {
+    it("matches bold text", () => {
+        const matcher = wakabamark.bold;
+
+        expect(matcher("**hello**")).toEqual(["hello", ""]);
+        expect(matcher("__hello__")).toEqual(["hello", ""]);
+        expect(matcher("*hello*")).toEqual(null);
+    });
+});

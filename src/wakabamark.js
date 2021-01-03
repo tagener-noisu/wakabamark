@@ -120,6 +120,12 @@ const italic =
         and(asterisk_or_underscore,
             and(plain_text, asterisk_or_underscore))));
 
+const bold =
+    strip(flatten(
+        and(join(and(asterisk_or_underscore, asterisk_or_underscore)),
+            and(plain_text,
+                join(and(asterisk_or_underscore, asterisk_or_underscore))))));
+
 module.exports = {
     char_match,
     not,
@@ -133,4 +139,5 @@ module.exports = {
     underscore,
     plain_text,
     italic,
+    bold,
 }
