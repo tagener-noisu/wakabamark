@@ -118,7 +118,7 @@ function create_ast(type, matcher) {
     }
 }
 
-function contents_with_tags(tags, contents) {
+function tag_around(tags, contents) {
     return strip(and(tags, contents, tags));
 }
 
@@ -128,7 +128,7 @@ const plain_text = create_ast("string",
 const italic = (str) => {
     const contents = one_or_more(or(plain_text, bold, monospace));
     const tags = asterisk_or_underscore;
-    const matcher = create_ast("italic", contents_with_tags(tags, contents));
+    const matcher = create_ast("italic", tag_around(tags, contents));
 
     return matcher(str);
 }
@@ -136,7 +136,7 @@ const italic = (str) => {
 const bold = (str) => {
     const contents = one_or_more(or(plain_text, italic, monospace));
     const tags = and(asterisk_or_underscore, asterisk_or_underscore);
-    const matcher = create_ast("bold", contents_with_tags(tags, contents));
+    const matcher = create_ast("bold", tag_around(tags, contents));
 
     return matcher(str);
 }
@@ -144,7 +144,7 @@ const bold = (str) => {
 const monospace = (str) => {
     const contents = one_or_more(plain_text);
     const tags = backtick;
-    const matcher = create_ast("mono", contents_with_tags(tags, contents));
+    const matcher = create_ast("mono", tag_around(tags, contents));
 
     return matcher(str);
 }
