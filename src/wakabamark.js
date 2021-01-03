@@ -120,6 +120,17 @@ function number_of(matcher) {
     }
 }
 
+function maybe(matcher) {
+    return(str) => {
+        let match = matcher(str);
+
+        if (match === null)
+            return [null, str];
+
+        return match;
+    }
+}
+
 const asterisk = char_match("*");
 
 const underscore = char_match("_");
@@ -131,6 +142,12 @@ const right_chevron = char_match(">");
 const slash = char_match("/");
 
 const percent = char_match("%");
+
+const carriage_return = char_match("\r");
+
+const new_line = char_match("\n");
+
+const end_paragraph = and(carriage_return, new_line);
 
 const asterisk_or_underscore = or(asterisk, underscore);
 
@@ -153,7 +170,7 @@ function tag_around(tags, contents) {
 
 const plain_text = create_ast("string",
     join(one_or_more(not(or(
-        asterisk, underscore, backtick, right_chevron, percent)))));
+        asterisk, underscore, backtick, right_chevron, percent, end_paragraph)))));
 
 const italic = (str) => {
     const contents = one_or_more(or(plain_text, bold, monospace, post_link));
@@ -196,6 +213,9 @@ const spoiler = (str) => {
     return matcher(str);
 }
 
+const paragraph = create_ast("paragraph",
+    strip(and(one_or_more(plain_text), maybe(end_paragraph)), 0));
+
 module.exports = {
     char_match,
     digit,
@@ -215,4 +235,5 @@ module.exports = {
     monospace,
     post_link,
     spoiler,
+    paragraph,
 }

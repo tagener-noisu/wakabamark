@@ -342,3 +342,23 @@ describe("spoiler", () => {
             ]}, ""]);
     });
 });
+
+describe("paragraph", () => {
+    it("matches paragraps", () => {
+        const matcher = wakabamark.paragraph;
+
+        expect(matcher("first line\r\nsecond line")).toEqual(
+            [{type: "paragraph", children: [
+                {type: "string", children: "first line"}
+            ]}, "second line"]);
+    });
+
+    it("matches paragraph when there's no new line", () => {
+        const matcher = wakabamark.paragraph;
+
+        expect(matcher("first line")).toEqual(
+            [{type: "paragraph", children: [
+                {type: "string", children: "first line"}
+            ]}, ""]);
+    });
+});
