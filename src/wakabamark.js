@@ -19,9 +19,7 @@ function not(matcher) {
     }
 }
 
-function and() {
-    const matchers = arguments;
-
+function and(...matchers) {
     return (str) => {
         const result = [];
         let rest = str;
@@ -40,9 +38,7 @@ function and() {
     }
 }
 
-function or() {
-    const matchers = arguments;
-
+function or(...matchers) {
     return (str) => {
         for(const matcher of matchers) {
             const match = matcher(str);
